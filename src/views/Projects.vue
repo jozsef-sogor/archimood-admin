@@ -31,39 +31,43 @@
                 <div v-for="(phase, index) of newProject" :key="index" class="projectPhase">
                     <h3>{{phase.phaseName}}</h3>
                     <input class="phaseName" type="text" placeholder="Phase name" v-model="phase.phaseName"><br>
+                    <input class="phasePrice" type="number" placeholder="Phase price" v-model="phase.phasePrice"> HUF<br>
 
                     <div v-for="(step, index) of phase.steps" :key="index">
-                        <input class="phaseName" type="text" placeholder="Step name" v-model="step.stepName"><br>
+                        <input class="stepName" type="text" placeholder="Step name" v-model="step.stepName"><br>
 
                         <input type="checkbox" id="isDownloadable" v-model="step.isDownloadable">
                         <label for="isDownloadable">Is the step downloadable?</label> 
 
-                        <input type="checkbox" id="done" v-model="step.isDdone">
+                        <input type="checkbox" id="done" v-model="step.isDone">
                         <label for="done">Is the step done?</label>   
    
 
                         <p>{{step.isDownloadable}}</p>
                         <p>{{step.done}}</p>
                     </div>
-                    <p @click='addStep(index)'>test</p>
-                    <mainButton :primaryButton='true' :onClick='addStep'>Add step</mainButton>
+                    <button class="primary" @click='addStep(index)'>Add step</button>
 
                     <!-- <input class="phaseName" type="text" placeholder="Phase name" v-model="newProject[index]"><br>
                     <input class="phaseStep" type="text" placeholder="Phase step" v-model="newProject[index].value"><br> -->
                 </div>
                 <mainButton :primaryButton='true' :onClick='addPhase'>Add section</mainButton>
             </div>
-            <div slot="modalFooter"></div>
+            <div slot="modalFooter">
+                <mainButton :primaryButton='true' :onClick='saveProject'>Save</mainButton>
+                <mainButton :primaryButton='false' :onClick='cancelProject'>Cancel</mainButton>
+
+            </div>
         </modal>
 
    </article>
 </template>
 
 <script>
-    import mainButton from '../components/Button';
 
+import mainButton from '../components/Button';
 import modal from '../components/Modal';
-
+const fb = require('../firebaseConfig.js');
 
 //import {general} from '../assets/mixins/general';
    export default {
@@ -84,7 +88,7 @@ import modal from '../components/Modal';
                     steps:[
                         {
                             stepName: '',
-                            done: false,
+                            isDone: false,
                             isDownloadable: false
                         },
                     ]
@@ -112,7 +116,7 @@ import modal from '../components/Modal';
         addPhase: function() {
             let newPhase = {
                 phaseName: '',
-                price: 0,
+                phasePrice: 0,
                 isDownloadable: false,
                 paid: false,
                 done: false,
@@ -126,11 +130,27 @@ import modal from '../components/Modal';
                 stepName: '',
                 file: '',
                 isDownloadable: false,
-                done: false,
+                isDone: false,
             };
             this.newProject[index].steps.push(step)
-        }
+        },
+        cancelProject: function() {
+          this.newProject = [];
+          this.modalVisible = false;
+       },
+        saveProject: function() {
+          let uid = this.projectClient;
+          let projectName = this.newProjectName;
+          let projectObject = this.newProject;
+
+          let project = {
+              projectClient: uid,
+              projectName: projectName,
+              projectPhases: projectObject
+          };
+            console.log(fb);
+          fb.functions.setDocumentDataWithAutoId('projects', project);
+       } 
       }
-      //push to array assign to object.. steps are array, phases are object
    }
 </script>

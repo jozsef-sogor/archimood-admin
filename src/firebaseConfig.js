@@ -3,6 +3,7 @@ import 'firebase/firestore'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/messaging'
+import 'firebase/functions'
 import store from './store'
 
 // firebase init goes here
@@ -39,7 +40,24 @@ const functions = {
          console.log('fb function working')
      },
      registerUser: function (creatingClient) {
-        this.setDocumentDataWithAutoId('users', creatingClient)
+        const register = firebase.functions().httpsCallable('newClient');
+        register(creatingClient).then(function(result) {
+          // Read result of the Cloud Function.
+          console.log(result)
+          if(result.data != null) {
+            store.dispatch('setClientSuccess', true)
+            }
+        })
+        .catch(function(error) {
+          // Getting the Error details.
+          //var code = error.code;
+          var message = error.message;
+          var details = error.details;
+          console.log(message , details)
+          // ...
+        }); 
+        //console.log(creatingClient);
+         //this.setDocumentDataWithAutoId('users', creatingClient)
      },
      setDocumentDataWithMerge: function(collection, document, data) {
         let ref = db.collection(collection).doc(document);

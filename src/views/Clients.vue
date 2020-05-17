@@ -24,6 +24,7 @@
             </div>
 
             <div slot="modalBody">
+                <h1 v-show="success">Client added succesfully</h1>
                 <form @submit.prevent="createClient" id="createUserForm">
                     <input type="text" placeholder="Name" v-model="creatingClient.name" /><br>
                     <input type="email" placeholder="Email" v-model="creatingClient.email" /><br>
@@ -71,9 +72,18 @@
         computed: {
             clients: function() {
                 let allClients = this.$store.getters.getClients;
-
-                return allClients.filter(client => client.isAdmin == false)
+                if (allClients != undefined) {
+                    return allClients.filter(client => client.isAdmin == false)
+                } else {
+                    return undefined
+                }
+            },
+            success: function() {
+                return this.$store.getters.getClientSuccess
             }
+        },
+        mounted() {
+            this.dataCheck()
         },
         methods: {
             createClient: function() {
@@ -84,8 +94,17 @@
                 this.$router.push({path: `/clients/${uid}`, params:{id: uid}})
             },
             toggleModal() {
+                const self = this;
                 this.modalVisible = !this.modalVisible;
+                if (!this.modalVisible) {
+                    self.$store.dispatch('setClientSuccess', false)
+                }
             },
+            dataCheck() {
+                if(this.clients == undefined) {
+                    fb.functions.initialFetch()
+                }
+            }
         }
     }
 </script>

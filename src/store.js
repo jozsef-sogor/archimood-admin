@@ -1,17 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from './router'
-import VuexPersistence from 'vuex-persist'
+//import createPersistedState from "vuex-persistedstate";
 
 
 const fb = require('./firebaseConfig.js')
 
 
 Vue.use(Vuex, router)
-
-const vuexLocal = new VuexPersistence({
-    storage: window.localStorage
-  })
    
 
 export const store = new Vuex.Store({
@@ -21,14 +17,16 @@ export const store = new Vuex.Store({
         isAdmin: false,
         currentUser: {},
 
-        clients: [],
+        clients: undefined,
         projects: [],
 
         smallLoader: false,
-        loadingScreen: false
+        loadingScreen: false,
+
+        clientSuccess: false
 
     },
-    plugins: [vuexLocal.plugin],
+    //plugins: [createPersistedState()],
     getters: {
         getUid(state) {
             return state.uid
@@ -47,6 +45,9 @@ export const store = new Vuex.Store({
         },
         getClients(state) {
             return state.clients
+        },
+        getClientSuccess(state) {
+            return state.clientSuccess
         }
 
     },
@@ -75,6 +76,9 @@ export const store = new Vuex.Store({
         },
         SET_PROJECTS(state, projectsArray) {
             state.projects = projectsArray
+        },
+        SET_CLIENT_SUCCESS(state, boolean) {
+            state.clientSuccess = boolean
         },
 
 
@@ -160,6 +164,9 @@ export const store = new Vuex.Store({
         },
         setSingleEntry (context, stateKey, data) {
             context.commit('SET_SINGLE_ENTRY', stateKey, data)
+        },
+        setClientSuccess (context, boolean) {
+            context.commit('SET_CLIENT_SUCCESS', boolean)
         }
     }, 
 })
