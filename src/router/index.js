@@ -1,16 +1,70 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import firebase from 'firebase'
+
+import Login from "../views/Login.vue";
+import Projects from "../views/Projects.vue";
+import Clients from "../views/Clients.vue";
+import SpecificClient from "../views/SpecificClient.vue";
+import Files from "../views/Files.vue";
+import Settings from "../views/Settings.vue";
+//import fb from "../assets/mixins/firebaseConfig";
+import { store } from "../store";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
+    path: '*',
+    redirect: '/login'
+ },
+  {
     path: "/",
-    name: "Home",
-    component: Home
+    name: "Login",
+    component: Login
   },
   {
+    path: "/projects",
+    name: "Projects",
+    component: Projects,
+    meta: {
+      requiresAuth: true
+   }
+  },
+  {
+    path: "/clients",
+    name: "Clients",
+    component: Clients,
+    meta: {
+      requiresAuth: true
+   }
+  },
+  {
+    path: "/clients/:userId",
+    name: "SpecificClient",
+    component: SpecificClient,
+    params: {id: ":userId"},
+    meta: {
+      requiresAuth: true
+   },
+   },
+  {
+    path: "/files",
+    name: "Files",
+    component: Files,
+    meta: {
+      requiresAuth: true
+   }
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
+    meta: {
+      requiresAuth: true
+   }
+  },
+   {
     path: "/about",
     name: "About",
     // route level code-splitting
@@ -26,5 +80,21 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
+  const currentUser = firebase.auth().currentUser
+  const isAdmin = store.state.isAdmin;
+  console.log(store.state.isAdmin);
+  if (requiresAuth && !currentUser) {
+      next('/login')
+  } else if (requiresAuth && currentUser && isAdmin) {
+      next()
+  } else if (to.name === "Login" && currentUser){
+      next('/projects')
+  } else {
+    next()
+  }
+})
 
 export default router;
