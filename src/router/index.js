@@ -11,6 +11,8 @@ import Settings from "../views/Settings.vue";
 //import fb from "../assets/mixins/firebaseConfig";
 import { store } from "../store";
 
+const fbConfig = require('../firebaseConfig.js')
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -89,11 +91,26 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth && !currentUser) {
       next('/login')
   } else if (requiresAuth && currentUser && isAdmin) {
-      next()
+      if(store.state.clients == undefined || store.state.projects == undefined) {
+        fbConfig.functions.initialFetch();
+        next()
+      } else {
+        next()
+      }
   } else if (to.name === "Login" && currentUser){
+    if(store.state.clients == undefined || store.state.projects == undefined) {
+      fbConfig.functions.initialFetch();
       next('/projects')
+    } else {
+      next('/projects')
+    }
   } else {
-    next()
+    if(store.state.clients == undefined || store.state.projects == undefined) {
+      fbConfig.functions.initialFetch();
+      next()
+    } else {
+      next()
+    }
   }
 })
 

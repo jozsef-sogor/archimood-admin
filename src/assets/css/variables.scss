@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap');
+
 $backgroundColor:#F8F8F8;
 $ctaColor: #75D675;
 $textColor: #000000;
 $gradientDark: #DFDFDF;
 
 $boxShadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+$neoUpShadow: 4px 4px 5px #D8D8D8, -4px -4px 5px #FFFFFF;
+$neoUpGradient: linear-gradient(102.56deg, #F8F8F8 0%, #DFDFDF 100%), #F8F8F8;
+$font: 'Montserrat', sans-serif;
+$heavyFont: bold;
+$lightFont: light;

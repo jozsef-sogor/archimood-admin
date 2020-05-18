@@ -1,10 +1,18 @@
 <template>
-   <div class="wrapper">
+   <div class="wrapper clients">
+       <div class="title">
       <h1>Clients</h1>
-
-      <article v-if="this.clients.length > 0">
-      <div class="card" v-for="(client, index) of clients" :key="index">
+        <mainButton class="floatingButton" :primaryButton='true' :onClick='toggleModal' v-show="!modalVisible">
+            + Create client
+        </mainButton>
+        </div>
+      <article v-if="this.clients.length > 0" class="cardHolder">
+      <div class="card neo-up" v-for="(client, index) of clients" :key="index">
           <h2>{{ client.name }}</h2>
+          <div class="cardContact">
+          <a :href="'tel:' + client.phone">call</a>
+          <a :href="'mailto:' + client.mail">mail</a>
+          </div>
           <button class="primary" @click='$router.push(`/clients/${client.id}`)'>Open client</button>
       </div>
       </article>
@@ -12,10 +20,6 @@
       <article v-else>
           <h2>No clients to show</h2>
       </article>
-
-        <mainButton :primaryButton='true' :onClick='toggleModal' v-show="!modalVisible">
-             Create client
-        </mainButton>
 
 
         <modal v-if="modalVisible">

@@ -1,20 +1,24 @@
 <template>
    <article class="wrapper">
-      <h1>Projects</h1>
+       <div class="title">
+            <h1>Projects</h1>
+            <mainButton :primaryButton='true' :onClick='toggleModal' v-show="!modalVisible">
+                + Create project
+            </mainButton>
+      </div>
       <div id="progressBar" v-if="projects.length > 0"></div>
 
       <section id="projects" v-if="projects.length > 0">
           <div class="card" v-for="(project, index) of projects" :key=index>
-              <h2>{{ project }}</h2>
+              <h2>{{ project.projectName }}</h2>
+              <h3>{{getClientName(project.projectClient)}}</h3>
           </div>
       </section>
 
       <section v-else>
           <h2>No projects to show</h2>
       </section>
-        <mainButton :primaryButton='true' :onClick='toggleModal' v-show="!modalVisible">
-             Create project
-        </mainButton>
+
         
         <modal v-show="modalVisible">
             <div slot="modalHeader">
@@ -150,7 +154,14 @@ const fb = require('../firebaseConfig.js');
           };
             console.log(fb);
           fb.functions.setDocumentDataWithAutoId('projects', project);
-       } 
+       },
+       getClientName: function(uid) {
+           return this.clients.find(client => client.id == uid).name
+       }
       }
    }
 </script>
+
+<style lang="scss">
+
+</style>
