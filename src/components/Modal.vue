@@ -2,9 +2,9 @@
     <section class="modal-wrapper">
         <div class="modal-bg"></div>
         <div class="modal">
-            <slot name="modalHeader"></slot>
-            <slot name="modalBody"></slot>
-            <slot name="modalFooter"></slot>
+            <slot name="modalHeader" class="modalHeader"></slot>
+            <slot name="modalBody" class="modalBody"></slot>
+            <slot name="modalFooter" class="modalFooter"></slot>
         </div>
     </section>
   
@@ -18,7 +18,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+/*
     .modalWrapper {
         position: fixed;
         top: 0;
@@ -31,5 +31,12 @@ export default {
             height: 100%;
 
         }
+    } */
+
+    .modalFooter {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: .5rem;
     }
 </style>

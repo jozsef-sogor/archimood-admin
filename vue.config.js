@@ -2,7 +2,19 @@ const path = require('path')
 
 module.exports = {
 
-
+configureWebpack:   {
+    test: /\.sass$/,
+    use: [
+      'vue-style-loader',
+      'css-loader',
+      {
+        loader: 'sass-loader',
+        options: {
+          indentedSyntax: true
+        }
+      }
+    ]
+  }
   /*chainWebpack: (config) => {
     config
       .module

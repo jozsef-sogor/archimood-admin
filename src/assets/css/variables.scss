@@ -6,7 +6,9 @@ $textColor: #000000;
 $gradientDark: #DFDFDF;
 
 $boxShadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
+$navShadow: 0px 0px 8px $textColor;
 $neoUpShadow: 4px 4px 5px #D8D8D8, -4px -4px 5px #FFFFFF;
+$neoDownShadow: inset 4px 4px 5px #D8D8D8, inset -4px -4px 5px #FFFFFF;
 $neoUpGradient: linear-gradient(102.56deg, #F8F8F8 0%, #DFDFDF 100%), #F8F8F8;
 $font: 'Montserrat', sans-serif;
 $heavyFont: bold;

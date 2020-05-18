@@ -4,6 +4,7 @@ import firebase from 'firebase'
 
 import Login from "../views/Login.vue";
 import Projects from "../views/Projects.vue";
+import SpecificProject from "../views/SpecificProject.vue";
 import Clients from "../views/Clients.vue";
 import SpecificClient from "../views/SpecificClient.vue";
 import Files from "../views/Files.vue";
@@ -34,6 +35,15 @@ const routes = [
    }
   },
   {
+    path: "/projects/:projectId",
+    name: "SpecificProject",
+    component: SpecificProject,
+    params: {id: ":projectId"},
+      meta: {
+        requiresAuth: true
+    }
+   },
+  {
     path: "/clients",
     name: "Clients",
     component: Clients,
@@ -48,7 +58,7 @@ const routes = [
     params: {id: ":userId"},
     meta: {
       requiresAuth: true
-   },
+   }
    },
   {
     path: "/files",

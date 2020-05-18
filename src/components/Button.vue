@@ -48,5 +48,6 @@ button {
 }
 .secondary {
     text-decoration: underline;
+    background-color: transparent;
 }
 </style>

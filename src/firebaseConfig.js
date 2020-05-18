@@ -118,7 +118,9 @@ const functions = {
             .onSnapshot(function(querySnapshot) {
                 let projects = [];
                 querySnapshot.docs.forEach(snapshot => {
-                    projects.push(snapshot.data())
+                    let projectSnap = snapshot.data();
+                    projectSnap.projectId = snapshot.id;
+                    projects.push(projectSnap);
                 })
                 store.dispatch('setProjects', projects);
                 projects = [];

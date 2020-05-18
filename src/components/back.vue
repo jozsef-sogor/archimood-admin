@@ -1,5 +1,5 @@
 <template>
-  <p @click="$router.go(-1)">Back</p>
+  <p @click="$router.go(-1)" class="backButton">Back</p>
 </template>
 
 <script>
@@ -9,7 +9,7 @@ export default {
 </script>
 
 <style>
- p {
+ .backButton {
      cursor: pointer;
      padding: .5rem;
  }
