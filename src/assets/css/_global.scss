@@ -14,6 +14,10 @@ input {
     padding: .5rem;
     margin: 1rem;
     width: 75%;
+    transition: .3s;
+    &:focus {
+        border-color: $ctaColor;
+    }
 }
 
 .login {
@@ -68,8 +72,10 @@ h1 {
 }
 .card {
     padding: .2rem;
-    width: 11rem;
-    height: 11rem;
+    min-width: 11rem;
+    min-height: 11rem;
+    height: auto;
+    width: auto;
     max-width: 300px;
     max-height: 300px;
     position: relative;
@@ -83,6 +89,16 @@ h1 {
     justify-content: space-between;
     align-items: center;
 
+}
+
+.big-card {
+    padding: .5rem;
+    margin: 1rem auto;
+    max-width: 400px;
+    position: relative;
+    background: $neoUpGradient;
+    border-radius: 7px;
+    text-align: center;
 }
 
 .neo-up {
@@ -113,13 +129,19 @@ h1 {
     opacity: .6;
 }
 
-.cardHolder {
+.card-holder {
    display: flex;
    flex-flow: row wrap;
    justify-content: space-around;
    .card{
        margin: 1rem;
    }
+}
+
+.cardContact {
+    a {
+        padding: 1rem;
+    }
 }
 
 .title {
@@ -166,6 +188,8 @@ h1 {
             position: sticky;
             bottom: 0;
             left: 0;
+            display: flex;
+            justify-content: space-around;
         }
     }
     .modal-bg {
@@ -177,6 +201,9 @@ h1 {
         top: 0;
         left: 0;
         z-index: 2;
+    }
+    .callback-message {
+        color: $ctaColor;
     }
 }
 

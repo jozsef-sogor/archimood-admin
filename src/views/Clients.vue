@@ -6,7 +6,7 @@
             + Create client
         </mainButton>
         </div>
-      <article v-if="this.clients.length > 0" class="cardHolder">
+      <article v-if="this.clients.length > 0" class="card-holder">
       <div class="card neo-up" v-for="(client, index) of clients" :key="index">
           <h2>{{ client.name }}</h2>
           <div class="cardContact">
@@ -28,13 +28,12 @@
             </div>
 
             <div slot="modalBody">
-                <h1 v-show="success">Client added succesfully</h1>
+                <h3 v-show="success" class="callback-message">Client added succesfully</h3>
                 <form @submit.prevent="createClient" id="createUserForm">
                     <input type="text" placeholder="Name" v-model="creatingClient.name" /><br>
                     <input type="email" placeholder="Email" v-model="creatingClient.email" /><br>
                     <input type="tel" placeholder="Phone: +3612345678" v-model="creatingClient.phone" /><br>
 
-                    <input type="password" placeholder="Temporary password" v-model="password" /><br>
                 </form>
             </div>
 
@@ -83,7 +82,20 @@
                 }
             },
             success: function() {
-                return this.$store.getters.getClientSuccess
+                return this.$store.getters.getSuccess
+            }
+        },
+        watch: {
+            success: function(newVal) {
+                if(newVal) {
+                    setTimeout(() => {
+                        this.$store.dispatch('setSuccess', false);
+                        this.creatingClient = {
+                            isAdmin: false
+                        };
+                        this.modalVisible = false;
+                    }, 1500)
+                }
             }
         },
         mounted() {

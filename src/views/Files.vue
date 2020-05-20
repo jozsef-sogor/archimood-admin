@@ -1,6 +1,10 @@
 <template>
    <div class="wrapper">
-      <h1>Files Component</h1>
+       <div class="title">
+      <h1>Files</h1>
+      </div>
+
+      <h2>Feature coming soon</h2>
    </div>
 </template>
 

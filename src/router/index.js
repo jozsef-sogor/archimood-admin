@@ -99,7 +99,7 @@ router.beforeEach((to, from, next) => {
   const isAdmin = store.state.isAdmin;
   console.log(store.state.isAdmin);
   if (requiresAuth && !currentUser) {
-      next('/login')
+      next('/')
   } else if (requiresAuth && currentUser && isAdmin) {
       if(store.state.clients == undefined || store.state.projects == undefined) {
         fbConfig.functions.initialFetch();

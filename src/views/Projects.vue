@@ -8,11 +8,11 @@
       </div>
       
 
-      <section id="projects" v-if="projects.length > 0">
-          <div class="card neo-up" v-for="(project, index) of projects" :key=index>
+      <section class="card-holder" id="projects" v-if="projects.length > 0">
+          <div :class= 'getClientName(project.projectClient) == "Deleted Client" ? "card neo-down" : "card neo-up"' v-for="(project, index) of projects" :key=index>
               <h2>{{ project.projectName }}</h2>
               <h3>{{getClientName(project.projectClient)}}</h3>
-          <button class="primary" @click='$router.push(`/projects/${project.projectId}`)'>Open project</button>
+          <button v-show="getClientName(project.projectClient) != 'Deleted Client'" class="primary" @click='$router.push(`/projects/${project.projectId}`)'>Open project</button>
 
           </div>
       </section>
@@ -33,8 +33,8 @@
                     </option>
                 </select>
                 <input type="text" class="bubble neo-up" placeholder="Project name" v-model="newProjectName"><br>
-
-                <div v-for="(phase, phaseIndex) of newProject" :key="phaseIndex" class="projectPhase">
+                <h3 class="callback-message" v-show="success">Project created succesfully</h3>
+                <div v-for="(phase, phaseIndex) of newProject" :key="phaseIndex" v-show="!success" class="projectPhase">
                     
                     <div class="bubble neo-down">
 
@@ -83,6 +83,7 @@
 
 import mainButton from '../components/Button';
 import modal from '../components/Modal';
+//import { functions } from '../firebaseConfig';
 const fb = require('../firebaseConfig.js');
 
 //import {general} from '../assets/mixins/general';
@@ -112,7 +113,7 @@ const fb = require('../firebaseConfig.js');
                 }
             ],
             newProjectName: '',
-            projectClient: ''
+            projectClient: '',
           }
       },
       computed: {
@@ -122,7 +123,20 @@ const fb = require('../firebaseConfig.js');
           },
           clients: function() {
               return this.$store.getters.getClients
+          },
+          success: function() {
+              return this.$store.getters.getSuccess
           }
+      },
+      watch: {
+            success: function(newVal) {
+                if(newVal) {
+                    setTimeout(() => {
+                        this.$store.dispatch('setSuccess', false);
+                        this.modalVisible = false;
+                    }, 1500)
+                }
+            }
       },
       methods: {
         toggleModal: function () {
@@ -175,7 +189,13 @@ const fb = require('../firebaseConfig.js');
           fb.functions.setDocumentDataWithAutoId('projects', project);
        },
        getClientName: function(uid) {
-           return this.clients.find(client => client.id == uid).name
+           let client = this.clients.find(client => client.id == uid);
+
+           if(client != undefined) {
+            return client.name
+           } else {
+               return 'Deleted Client'
+           }
        }
       }
    }

@@ -1,6 +1,8 @@
 <template>
   <div class="login">
          <form @submit.prevent="login" id="loginForm">
+            <img id="loginImage" src="../assets/img/archimood-logo.png" alt="Archimood">
+            <h2 class="error neo-down" v-bind="error" v-show="error"> {{error}}</h2>
             <input type="email" placeholder="Email" v-model="email" /><br>
             <input type="password" placeholder="Password" v-model="password" /><br>
             <mainButton :primaryButton='true' :onClick='login'>Login</mainButton>
@@ -27,7 +29,8 @@ export default {
       password: '',
       errorMessage: '',
       loginUid: this.computedUid,
-      loginUserObj: this.computedUserObj
+      loginUserObj: this.computedUserObj,
+      error: ''
     }
   },
   computed: {
@@ -38,6 +41,9 @@ export default {
       return this.$store.getters.getCurrentUser
     }
   },
+  mounted: function(){
+    window.alert('Email: admin@gmail.com, password: admin123')
+  },
   methods: {
     testFunction: function() {
       console.log('test works')
@@ -45,9 +51,11 @@ export default {
     login: function() {
 
     fb.auth.signInWithEmailAndPassword(this.email, this.password).then(user => {
-        this.$store.dispatch('setCurrentUser', user.user)
-        this.$store.dispatch('fetchUserProfile')
-        this.$router.replace('clients')
+        let currentUser = user.user;
+        currentUser.id = user.uid
+        this.$store.dispatch('setCurrentUser', currentUser);
+        this.$store.dispatch('fetchUserProfile');
+        this.$router.replace('clients');
     })
     .then(function() {
         fb.functions.initialFetch()
@@ -55,6 +63,7 @@ export default {
 
     )
     .catch(err => {
+      this.error = err;
         console.log(err)
     })
 
@@ -124,7 +133,16 @@ export default {
 };
 </script>
 <style lang="scss">
-  .login {
-    
+    #loginForm {
+    position:relative
+  }
+  #loginImage {
+      filter: invert(1);
+      max-width: 100%;
+      margin: auto;   
+  }
+    .error {
+    color: red;
+    font-weight: 600;
   }
 </style>

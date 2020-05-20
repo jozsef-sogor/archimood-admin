@@ -23,7 +23,7 @@ export const store = new Vuex.Store({
         smallLoader: false,
         loadingScreen: false,
 
-        clientSuccess: false
+        success: false
 
     },
     //plugins: [createPersistedState()],
@@ -46,8 +46,8 @@ export const store = new Vuex.Store({
         getClients(state) {
             return state.clients
         },
-        getClientSuccess(state) {
-            return state.clientSuccess
+        getSuccess(state) {
+            return state.success
         }
 
     },
@@ -77,8 +77,8 @@ export const store = new Vuex.Store({
         SET_PROJECTS(state, projectsArray) {
             state.projects = projectsArray
         },
-        SET_CLIENT_SUCCESS(state, boolean) {
-            state.clientSuccess = boolean
+        SET_SUCCESS(state, boolean) {
+            state.success = boolean
         },
 
 
@@ -165,8 +165,8 @@ export const store = new Vuex.Store({
         setSingleEntry (context, stateKey, data) {
             context.commit('SET_SINGLE_ENTRY', stateKey, data)
         },
-        setClientSuccess (context, boolean) {
-            context.commit('SET_CLIENT_SUCCESS', boolean)
+        setSuccess (context, boolean) {
+            context.commit('SET_SUCCESS', boolean)
         }
     }, 
 })

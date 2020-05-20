@@ -45,7 +45,7 @@ const functions = {
           // Read result of the Cloud Function.
           console.log(result)
           if(result.data != null) {
-            store.dispatch('setClientSuccess', true)
+            store.dispatch('setSuccess', true)
             }
         })
         .catch(function(error) {
@@ -58,6 +58,16 @@ const functions = {
         }); 
         //console.log(creatingClient);
          //this.setDocumentDataWithAutoId('users', creatingClient)
+     },
+     logOut: function() {
+        auth.signOut()
+        .then(function() {
+          location.replace('/')
+        })
+        .catch(function(error) {
+          window.alert('Logout failed. Please refresh the page and try again.');
+          console.log('Logout error: ', error)
+        });
      },
      setDocumentDataWithMerge: function(collection, document, data) {
         let ref = db.collection(collection).doc(document);
@@ -76,20 +86,26 @@ const functions = {
         ref.add(data)
         .then(function() {
             console.log(`${collection} successfully written!`);
+            store.dispatch('setSuccess', true);
         })
         .catch(function(error) {
             console.error("Error writing document: ", error);
         });
       },
       initialFetch: function() {
+        if(store.getters.getAuthenticated == true) {
         this.fetchAllUsers();
         this.fetchAllProjects();
+        } else {
+            console.log('not logged in')
+        }
 
       },
       fetchAllUsers: function() {
-        usersCollection
+        usersCollection.orderBy("created", "desc")
             .onSnapshot(function(querySnapshot) {
                 console.log(querySnapshot.docs);
+                let currentUser = store.getters.getCurrentUser;
                 let clients = [];
                 console.log(clients);
                 querySnapshot.docs.forEach(snapshot => {
@@ -100,8 +116,11 @@ const functions = {
                         userObject.id = snapshot.id;
                         //console.log(snapshot.data());
                         clients.push(userObject);
-                    } else {
-                        console.log("that's admin")
+                    } else if(isAdmin == true && snapshot.id == currentUser.id) {
+                        let adminUser =snapshot.data();
+                        adminUser.id = snapshot.id
+                        store.dispatch('setCurrentUser', adminUser);
+                        console.log("that's admin");
                     }
                 })
                 store.dispatch('setClients', clients);
@@ -129,6 +148,18 @@ const functions = {
             function(error) {
                 console.log('error while loading initial data: ', error)
             });
+      },
+      
+      deleteDocument: function(collection, doc) {
+          let ref = db.collection(collection).doc(doc)
+
+          ref.delete().then(() => {
+            console.log("Deletion was succesful")
+            store.dispatch('setSuccess', true);
+          })
+          .catch((error) => {
+              console.log("error during deletion: ", error)
+          })
       }
 
 }
