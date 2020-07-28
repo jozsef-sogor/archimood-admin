@@ -19,11 +19,14 @@ export const store = new Vuex.Store({
 
         clients: undefined,
         projects: [],
+        dataFetched: false,
 
         smallLoader: false,
         loadingScreen: false,
 
-        success: false
+        success: false,
+
+        notification: []
 
     },
     //plugins: [createPersistedState()],
@@ -48,6 +51,15 @@ export const store = new Vuex.Store({
         },
         getSuccess(state) {
             return state.success
+        },
+        getDataFetched(state) {
+            return state.dataFetched
+        },
+        getNotification(state) {
+            return state.notification
+        },
+        getSmallLoader(state) {
+            return state.smallLoader
         }
 
     },
@@ -79,6 +91,21 @@ export const store = new Vuex.Store({
         },
         SET_SUCCESS(state, boolean) {
             state.success = boolean
+        },
+        SET_DATA_FETCHED(state, boolean) {
+            state.dataFetched = boolean
+        },
+        ADD_NOTIFICATION(state, data) {
+            data.id = Math.random();
+            state.notification.push(data);
+            setTimeout(() => {
+               let index = state.notification.indexOf(data);
+               state.notification.splice(index, 1)
+            }, 3500)
+        },
+        REMOVE_NOTIFICATION(state, data) {
+            let index = state.notification.indexOf(data);
+            state.notification.splice(index, 1)
         },
 
 
@@ -167,6 +194,18 @@ export const store = new Vuex.Store({
         },
         setSuccess (context, boolean) {
             context.commit('SET_SUCCESS', boolean)
+        },
+        setDataFetched (context, boolean) {
+            context.commit('SET_DATA_FETCHED', boolean)
+        },
+        setAddNotification(context, data) {
+            context.commit('ADD_NOTIFICATION', data)
+        },
+        setRemoveNotification(context, data) {
+            context.commit('REMOVE_NOTIFICATION', data)
+        },
+        setSmallLoader(context, boolean) {
+            context.commit('SET_SMALL_LOADER', boolean)
         }
     }, 
 })

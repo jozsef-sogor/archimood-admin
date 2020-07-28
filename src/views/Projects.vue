@@ -12,7 +12,7 @@
           <div :class= 'getClientName(project.projectClient) == "Deleted Client" ? "card neo-down" : "card neo-up"' v-for="(project, index) of projects" :key=index>
               <h2>{{ project.projectName }}</h2>
               <h3>{{getClientName(project.projectClient)}}</h3>
-          <button v-show="getClientName(project.projectClient) != 'Deleted Client'" class="primary" @click='$router.push(`/projects/${project.projectId}`)'>Open project</button>
+          <button class="primary" @click='$router.push(`/projects/${project.projectId}`)'>Open project</button>
 
           </div>
       </section>
@@ -27,7 +27,8 @@
                 <h2>Create new project</h2>
             </div>
             <div slot="modalBody" class="modalBody">
-                <select name="" id="clientSelect" v-model="projectClient">
+                <label for="clientSelect">Select client</label>
+                <select name="clientSelect" id="clientSelect" v-model="projectClient">
                     <option v-for="client of clients" :key="client.id" :value="client.id">
                         {{ client.name }}
                     </option>
@@ -102,11 +103,14 @@ const fb = require('../firebaseConfig.js');
                     isDownloadable: false,
                     isPaid: false,
                     isDone: false,
+                    id: 1,
                     steps:[
                         {
                             stepName: '',
                             isDone: false,
-                            isDownloadable: false
+                            isDownloadable: false,
+                            files: [],
+                            id: 1
                         },
                     ]
 
@@ -131,10 +135,8 @@ const fb = require('../firebaseConfig.js');
       watch: {
             success: function(newVal) {
                 if(newVal) {
-                    setTimeout(() => {
                         this.$store.dispatch('setSuccess', false);
                         this.modalVisible = false;
-                    }, 1500)
                 }
             }
       },
@@ -150,7 +152,8 @@ const fb = require('../firebaseConfig.js');
                 isDownloadable: false,
                 paid: false,
                 done: false,
-                steps: []
+                steps: [],
+                id: Math.random()
     
             };
             this.newProject.push(newPhase);
@@ -161,9 +164,10 @@ const fb = require('../firebaseConfig.js');
         addStep: function(index) {
             const step = {
                 stepName: '',
-                file: '',
+                files: [],
                 isDownloadable: false,
                 isDone: false,
+                id: Math.random()
             };
             this.newProject[index].steps.push(step)
         },
@@ -176,6 +180,7 @@ const fb = require('../firebaseConfig.js');
           this.modalVisible = false;
        },
         saveProject: function() {
+          this.$store.dispatch('setSmallLoader', true);
           let uid = this.projectClient;
           let projectName = this.newProjectName;
           let projectObject = this.newProject;

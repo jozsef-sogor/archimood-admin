@@ -21,6 +21,7 @@ fb.auth.onAuthStateChanged(user => {
   console.log('user from main.js: ', user);
   store.dispatch('setCurrentUser', user);
   store.dispatch('fetchUserProfile');
+  router.replace('/clients');
     if (!app) {
         app = new Vue({
             el: '#app',

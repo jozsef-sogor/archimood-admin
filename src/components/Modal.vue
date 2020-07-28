@@ -5,15 +5,23 @@
             <slot name="modalHeader" class="modalHeader"></slot>
             <slot name="modalBody" class="modalBody"></slot>
             <slot name="modalFooter" class="modalFooter"></slot>
+            <loader v-if="smallLoaderVisible"></loader>
         </div>
     </section>
   
 </template>
 
 <script>
-
+import loader from './smallLoader'
 export default {
-
+    components: {
+        loader
+    },
+    computed: {
+        smallLoaderVisible: function() {
+            return this.$store.getters.getSmallLoader
+        }
+    }
 }
 </script>
 

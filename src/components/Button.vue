@@ -37,6 +37,7 @@ button {
     margin: .75rem;
     display: block;
     margin: .75rem auto;
+    cursor: pointer;
 }
 .primary {
     background-color: $ctaColor;

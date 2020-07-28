@@ -215,3 +215,9 @@ h1 {
     width: 100% !important;
 }
 
+button:disabled, button[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+    transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+

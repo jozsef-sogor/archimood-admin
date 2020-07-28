@@ -94,15 +94,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
-  const currentUser = firebase.auth().currentUser
+  const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
+  const currentUser = firebase.auth().currentUser;
   const isAdmin = store.state.isAdmin;
-  console.log(store.state.isAdmin);
   if (requiresAuth && !currentUser) {
       next('/')
   } else if (requiresAuth && currentUser && isAdmin) {
-      if(store.state.clients == undefined || store.state.projects == undefined) {
+      if(!store.state.dataFetched) {
         fbConfig.functions.initialFetch();
+        console.log('trying to inital fetch from router');
         next()
       } else {
         next()
@@ -115,12 +115,13 @@ router.beforeEach((to, from, next) => {
       next('/projects')
     }
   } else {
-    if(store.state.clients == undefined || store.state.projects == undefined) {
+    next()
+    /*if(store.state.clients == undefined || store.state.projects == undefined) {
       fbConfig.functions.initialFetch();
       next()
     } else {
       next()
-    }
+    } */
   }
 })
 

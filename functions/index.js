@@ -2,13 +2,39 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fs=require('fs'); 
 const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 admin.initializeApp();
 
+const SENDGRID_API_KEY = functions.config().sendgrid.key;
+sgMail.setApiKey(SENDGRID_API_KEY);
 
-const gmailEmail = "archimood.exam.project@gmail.com";
-const gmailPassword = "Archimood123";
+
+exports.newClientEmail = functions.auth.user().onCreate((user) => {
+  const recipent_email = user.email;
+  const recipient_name = user.displayName;
+
+  const msg = {
+    to: recipent_email,
+    from: 'sogor.jozsef98@gmail.com',
+
+    templateId: 'd-e186d38c27874f88b67c072e63ab2465',
+    dynamicTemplateData: {
+      name: recipient_name
+    }
+  };
+
+  return sgMail.send(msg)
+
+.then(()=> console.log('email sent'))
+.catch(error => console.log(error.response.body))
+})
+
+
+/*
+const gmailEmail = "sogor.jozsef@hotmail.com";
+const gmailPassword = "QAWSedrftgzh12";
 const mailTransport = nodemailer.createTransport({
-  service: 'gmail',
+  service: 'hotmail',
   auth: {
     user: gmailEmail,
     pass: gmailPassword,
@@ -16,16 +42,26 @@ const mailTransport = nodemailer.createTransport({
 });
 
 
-var htmlmail=fs.readFileSync("welcome-mail.html","utf-8").toString();
+//var htmlmail=fs.readFileSync('test.html',"utf-8").toString();
 
 exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
     const recipent_email = user.email; 
    
     const mailOptions = {
-        from: '"Archimood Design" <archimood.exam.project@gmail.com>',
+        from: '"Archimood Design" <sogor.jozsef98@gmail.com>',
         to: recipent_email,
         subject: 'Welcome to Archimood Design',
-         html: htmlmail
+         html: //htmlmail
+         `<h1>Dear ${user.displayName}</h1>
+         <h3>Welcome at Archimood Design</h3>
+         <p>A client profile was created for you</p>
+     
+         <h2>To sign in use your email address and password</h2>
+         <p>Your password is: 123456</p>
+     
+         <a href="https://www.jozsef-sogor.com/exam/client"><button>Open site</button></a>
+         <a href="https://www.jozsef-sogor.com/exam/client">https://www.jozsef-sogor.com/exam/client</a>
+     `
     };
     
   try {
@@ -38,7 +74,7 @@ exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
 return null; 
   });
 
-
+*/
 
 
 
@@ -105,3 +141,28 @@ exports.createClient = functions.firestore
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+
+exports.projectNotification = functions.firestore.document(`projects/{projectId}`).onWrite((change, context) => {
+  const userId = change.after.data().projectClient;
+  const projectName = change.after.data().projectName;
+  let token = null;
+  
+  return admin.firestore().doc(`users/${userId}`).get()
+  .then(snapshot => token = snapshot.data().data.notificationToken)
+  .then(() => {
+
+    const payload = {
+      notification: {
+        title: `Update regarding ${projectName}`,
+        body: 'Open your profile for more details',
+        icon: 'https://placeimg.com/250/250/arch'
+      }
+    };
+
+   return admin.messaging().sendToDevice(token, payload);
+    //console.log('Notification success');
+  }).catch(error => {
+    console.log(error)
+  });
+
+});

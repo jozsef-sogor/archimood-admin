@@ -45,7 +45,13 @@ const functions = {
           // Read result of the Cloud Function.
           console.log(result)
           if(result.data != null) {
+              let success = {
+                  type: 'success',
+                  data: 'Client registered succesfully'
+              }
             store.dispatch('setSuccess', true)
+            store.dispatch('setAddNotification', success)
+            store.dispatch('setSmallLoader', false)
             }
         })
         .catch(function(error) {
@@ -53,7 +59,14 @@ const functions = {
           //var code = error.code;
           var message = error.message;
           var details = error.details;
-          console.log(message , details)
+          let fail = {
+              type: 'error',
+              data: error.message
+          };
+          store.dispatch('setAddNotification', fail);
+          store.dispatch('setSmallLoader', false);
+
+          console.log(message , details);
           // ...
         }); 
         //console.log(creatingClient);
@@ -69,38 +82,117 @@ const functions = {
           console.log('Logout error: ', error)
         });
      },
+
      setDocumentDataWithMerge: function(collection, document, data) {
         let ref = db.collection(collection).doc(document);
   
         ref.set({data}, { merge: true })
         .then(function() {
+            let success = {
+                type: 'success',
+                data: 'Project updated succesfully'
+            };
+            store.dispatch('setAddNotification', success);
+            store.dispatch('setSmallLoader', false);
+            store.dispatch('setSuccess', true);
+
+
             console.log(`${document} successfully written!`);
         })
         .catch(function(error) {
+            let fail = {
+                type: 'error',
+                data: error.message
+            }
+            store.dispatch('setAddNotification', fail);
+            store.dispatch('setSmallLoader', false);
+
             console.error("Error writing document: ", error);
         });
       },
+
+      setDocumentData: function(collection, document, data) {
+        let ref = db.collection(collection).doc(document);
+  
+        ref.set(data)
+        .then(function() {
+            let success = {
+                type: 'success',
+                data: `New document in ${collection} created succesfully`
+            }
+            store.dispatch('setAddNotification', success);
+            store.dispatch('setSmallLoader', false);
+            store.dispatch('setSuccess', true);
+
+
+            console.log(`${document} successfully written!`);
+        })
+        .catch(function(error) {
+            let fail = {
+                type: 'error',
+                data: error.message
+            }
+            store.dispatch('setAddNotification', fail);
+            store.dispatch('setSmallLoader', false);
+
+
+            console.error("Error writing document: ", error);
+        });
+      },
+
       setDocumentDataWithAutoId: function(collection, data) {
         let ref = db.collection(collection);
   
         ref.add(data)
         .then(function() {
-            console.log(`${collection} successfully written!`);
+            let success = {
+                type: 'success',
+                data: `New document in ${collection} created succesfully`
+            }
+            store.dispatch('setAddNotification', success);
+            store.dispatch('setSmallLoader', false);
             store.dispatch('setSuccess', true);
+
+
+
+            console.log(`${collection} successfully written!`);
         })
         .catch(function(error) {
+            let fail = {
+                type: 'error',
+                data: error.message
+            }
+            store.dispatch('setAddNotification', fail);
+            store.dispatch('setSmallLoader', false);
+
+
             console.error("Error writing document: ", error);
         });
       },
+      
+      updateDocument: function(collection, doc, data) {
+        let ref = db.collection(collection).doc(doc);
+        ref.update(data)
+        .then(function() {
+            console.log(`${collection} --> ${doc} succesfully updated`);
+            return 'success'
+        })
+        .catch(function(error) {
+            console.error(`Error updateing document ${collection} --> ${doc} ${error}`);
+            return error
+        })
+    },
+
       initialFetch: function() {
         if(store.getters.getAuthenticated == true) {
         this.fetchAllUsers();
         this.fetchAllProjects();
+        store.dispatch('setDataFetched', true);
         } else {
             console.log('not logged in')
         }
-
       },
+
       fetchAllUsers: function() {
         usersCollection.orderBy("created", "desc")
             .onSnapshot(function(querySnapshot) {
@@ -154,14 +246,28 @@ const functions = {
           let ref = db.collection(collection).doc(doc)
 
           ref.delete().then(() => {
+              let success = {
+                  type: 'success',
+                  data: 'Document succesfully deleted'
+              }
+              store.dispatch('setAddNotification', success);
+              store.dispatch('setSmallLoader', false);
+              store.dispatch('setSuccess', true);
+
             console.log("Deletion was succesful")
-            store.dispatch('setSuccess', true);
           })
           .catch((error) => {
+              let fail = {
+                  type: 'error',
+                  data: error.message
+              }
+              store.dispatch('setAddNotification', fail);
+              store.dispatch('setSmallLoader', false);
+
+
               console.log("error during deletion: ", error)
           })
-      }
-
+      },
 }
 
 

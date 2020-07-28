@@ -6,12 +6,12 @@
             + Create client
         </mainButton>
         </div>
-      <article v-if="this.clients.length > 0" class="card-holder">
+      <article v-if="!null" class="card-holder">
       <div class="card neo-up" v-for="(client, index) of clients" :key="index">
           <h2>{{ client.name }}</h2>
           <div class="cardContact">
-          <a :href="'tel:' + client.phone">call</a>
-          <a :href="'mailto:' + client.mail">mail</a>
+          <a :href="'tel:' + client.phone"><i class="material-icons-round">phone_iphone</i></a>
+          <a :href="'mailto:' + client.mail"><i class="material-icons-round">email</i></a>
           </div>
           <button class="primary" @click='$router.push(`/clients/${client.id}`)'>Open client</button>
       </div>
@@ -78,7 +78,7 @@
                 if (allClients != undefined) {
                     return allClients.filter(client => client.isAdmin == false)
                 } else {
-                    return undefined
+                    return null
                 }
             },
             success: function() {
@@ -94,27 +94,23 @@
                             isAdmin: false
                         };
                         this.modalVisible = false;
-                    }, 1500)
+                    }, 10)
                 }
             }
         },
         mounted() {
-            this.dataCheck()
+            //this.dataCheck()
         },
         methods: {
             createClient: function() {
-                console.log('creating new client');
+                this.$store.dispatch('setSmallLoader', true);
                 fb.functions.registerUser(this.creatingClient)
             },
             navigate: function(uid) {
                 this.$router.push({path: `/clients/${uid}`, params:{id: uid}})
             },
             toggleModal() {
-                const self = this;
                 this.modalVisible = !this.modalVisible;
-                if (!this.modalVisible) {
-                    self.$store.dispatch('setClientSuccess', false)
-                }
             },
             dataCheck() {
                 if(this.clients == undefined) {

@@ -44,7 +44,7 @@ nav{
             position: absolute;
             top: -2px;
             height: 5px;
-            left: 0;
+            right: 0;
             width: 100%;
             transition: .3s;
             background-color: $ctaColor;

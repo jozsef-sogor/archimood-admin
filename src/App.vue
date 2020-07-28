@@ -2,18 +2,32 @@
   <div id="app">
     <router-view />
     <Navigation v-if="isAuth"></Navigation>
+    <notification></notification>
   </div>
 </template>
 <script>
-import Navigation from './components/Nav'
+import Navigation from './components/Nav';
+import notification from './components/notification'
+const fb = require('./firebaseConfig');
 export default {
   name: 'app',
   components: {
-    'Navigation': Navigation
+    'Navigation': Navigation,
+    'notification': notification
   },
   computed: {
     isAuth: function() {
       return this.$store.getters.getAuthenticated
+    }
+  },
+  created: function() {
+    //this.dataCheck();
+  },
+  methods: {
+    dataCheck: function() {
+      if(!this.$store.getters.getDataFetched) {
+        fb.functions.initialFetch()
+      }
     }
   }
 }
@@ -39,7 +53,7 @@ export default {
     }
     .wrapper {
       margin-bottom: auto;
-      margin-left: 75px;
+      margin-left: 100px;
     }
 }
 </style>

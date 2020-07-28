@@ -23,6 +23,10 @@
         <h2>Projects</h2>
         <div class="card neo-up" v-for="(project, index) of userProjects" :key="index">
             <h3>{{project.projectName}}</h3>
+
+            <progressBar :showSteps="true" :maxValue="calculateProgress(project, true)" :progress="calculateProgress(project, false)"></progressBar>
+
+            <button class="primary" @click="$router.push(`/projects/${project.projectId}`)">Open project</button>
         </div>
 
       </section>
@@ -63,12 +67,14 @@
 <script>
 import Back from '../components/back';
 import Modal from '../components/Modal';
+import progressBar from '../components/progressBar'
 //import MainButton from '../components/Button';
 const fb = require('../firebaseConfig');
 export default {
     components: {
         Back, 
-        Modal
+        Modal,
+        progressBar
         //MainButton
     },
     data() {
@@ -110,10 +116,11 @@ export default {
             success: function(newVal) {
                 if(newVal) {
                     setTimeout(() => {
+
                         this.$store.dispatch('setSuccess', false);
                         this.modalVisible = false;
                         this.$router.replace('/clients');
-                    }, 1500)
+                    },10)
                 }
             }
     },
@@ -125,7 +132,26 @@ export default {
             this.modalVisible = false
         },
         deleteProfile: function(uid) {
-            fb.functions.deleteDocument('users', uid)
+            this.$store.dispatch('setSmallLoader', true);
+            fb.functions.deleteDocument('users', uid);
+        },
+        calculateProgress: function(project, returnTotal) {
+            let stepsObject = {
+                total: 0,
+                done: 0
+            };
+
+           for(let phase of project.projectPhases) {
+               for (let step of phase.steps) {
+                   stepsObject.total++;
+
+                   if(step.isDone) {
+                       stepsObject.done++
+                   }
+               }
+           }
+           return returnTotal == true ? stepsObject.total : stepsObject.done
+        
         }
     }
 }

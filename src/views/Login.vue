@@ -55,11 +55,11 @@ export default {
         currentUser.id = user.uid
         this.$store.dispatch('setCurrentUser', currentUser);
         this.$store.dispatch('fetchUserProfile');
-        this.$router.replace('clients');
+        this.$router.replace('projects');
     })
     .then(function() {
         fb.functions.initialFetch()
-            },
+      },
 
     )
     .catch(err => {
@@ -134,7 +134,10 @@ export default {
 </script>
 <style lang="scss">
     #loginForm {
-    position:relative
+    position:relative;
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
   }
   #loginImage {
       filter: invert(1);
