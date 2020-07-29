@@ -75,7 +75,7 @@ const functions = {
      logOut: function() {
         auth.signOut()
         .then(function() {
-          location.replace('/')
+          location.replace('/exam/admin')
         })
         .catch(function(error) {
           window.alert('Logout failed. Please refresh the page and try again.');

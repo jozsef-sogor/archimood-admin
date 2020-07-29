@@ -28,7 +28,6 @@
             </div>
 
             <div slot="modalBody">
-                <h3 v-show="success" class="callback-message">Client added succesfully</h3>
                 <form @submit.prevent="createClient" id="createUserForm">
                     <input type="text" placeholder="Name" v-model="creatingClient.name" /><br>
                     <input type="email" placeholder="Email" v-model="creatingClient.email" /><br>

@@ -53,8 +53,7 @@
               <Modal v-show="modalVisible">
             <div class="modalHeader" slot="modalHeader"><h3>Deleting Client</h3></div>
             <div class="modalBody" slot="modalBody">
-                <p v-show="!success">Are you sure you want to delete {{selectedUser.name}}'s profile?</p>
-                <h3 v-show="success" class="callback-message">Client deleted successfully</h3>
+                <p>Are you sure you want to delete {{selectedUser.name}}'s profile?</p>
             </div>
             <div class="modalFooter" slot="modalFooter">
                 <button class="primary" @click="deleteProfile(currentUserId)">Delete</button>
